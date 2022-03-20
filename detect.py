@@ -84,7 +84,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
         source = check_file(source)  # download
 
     # Directories
-    save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
+    save_dir = Path(project) # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
     # Load model
@@ -166,12 +166,15 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-                        annotator.box_label(xyxy, label, color=colors(c, True))
+                        annotator.box_label(xyxy, color=colors(c, True))
                         if save_crop:
                             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
             # Stream results
             im0 = annotator.result()
+            n=len(det)
+            s="Objects are %s"%str(n)
+            cv2.putText(im0,s,(30,30),fontFace=cv2.FONT_HERSHEY_SIMPLEX,fontScale=1,color=(255,0,0),thickness=2)
             if view_img:
                 cv2.imshow(str(p), im0)
                 cv2.waitKey(1)  # 1 millisecond
